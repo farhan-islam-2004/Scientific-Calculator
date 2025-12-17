@@ -2,9 +2,6 @@
 
 A powerful, mobile-first scientific calculator built with vanilla HTML, CSS, and JavaScript. It features advanced mathematical functions, an equation solver, a graphing engine, and a built-in unit converter.
 
-![Calculator Preview](preview.png)
-*(Note: Add a screenshot of your calculator here)*
-
 ## Features
 
 ### 🧮 Scientific Calculation

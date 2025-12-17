@@ -1,0 +1,652 @@
+/* ================= THEME VARIABLES ================= */
+:root {
+    --bg: #0f0f14;
+    --calc-bg: #1a1a24;
+    --display-bg: #101018;
+
+    --btn-num: #2b2b34;
+    --btn-sci: #303043;
+    --btn-op: #2f4cff;
+    --btn-danger: #ff4d4d;
+    --btn-equal: #bcd4ff;
+
+    --text: #ffffff;
+}
+
+/* Light Theme */
+.light {
+    --bg: #f4f4f4;
+    --calc-bg: #ffffff;
+    --display-bg: #eaeaea;
+
+    --btn-num: #d6d6d6;
+    --btn-sci: #cfcfcf;
+    --btn-op: #4a6cff;
+    --btn-danger: #ff5c5c;
+    --btn-equal: #cfe0ff;
+
+    --text: #000000;
+}
+
+/* ================= GLOBAL (Mobile First) ================= */
+body {
+    margin: 0;
+    background: var(--bg);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* Start at top for mobile */
+    min-height: 100vh;
+    color: var(--text);
+    padding: 10px;
+    /* Safe area padding */
+    box-sizing: border-box;
+    /* Prevent pull-to-refresh on mobile if desired, or handle via JS */
+    overscroll-behavior-y: none;
+}
+
+/* ================= CALCULATOR (Fluid Mobile) ================= */
+.calculator {
+    background: var(--calc-bg);
+    padding: 15px;
+    /* Slightly less padding on mobile */
+    border-radius: 20px;
+    width: 100%;
+    max-width: 450px;
+    /* Max width for large phones/tablets in portrait */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* ================= DISPLAY ================= */
+.display-container {
+    position: relative;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.history-icon {
+    position: absolute;
+    left: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    height: auto;
+    width: auto;
+    z-index: 10;
+    grid-column: auto;
+    /* Override global button span */
+}
+
+.history-icon:hover {
+    color: var(--text);
+    background: transparent;
+    filter: brightness(1.2);
+}
+
+#display {
+    width: 100%;
+    height: 70px;
+    /* Slightly smaller on mobile to save vertical space */
+    font-size: 28px;
+    /* Readable */
+    text-align: right;
+    padding: 10px 45px;
+    border-radius: 16px;
+    border: none;
+    background: var(--display-bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#expressionDisplay {
+    font-size: 14px;
+    min-height: 18px;
+}
+
+/* ================= GRID LAYOUT (28-Col) ================= */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    gap: 6px;
+    /* Tighter gap for mobile */
+    padding: 5px;
+}
+
+/* ================= BUTTON BASE (Touch Friendly) ================= */
+button {
+    height: 55px;
+    /* Larger touch target */
+    border-radius: 12px;
+    border: none;
+    font-size: 18px;
+    /* Larger text for readability */
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    transition: filter 0.1s;
+    grid-column: span 4;
+    touch-action: manipulation;
+    /* Optimizes touch interaction */
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+/* ... Color classes (sci, num, op, danger) remain the same ... */
+
+
+/* ================= DESKTOP ENHANCEMENTS (Media Query) ================= */
+@media (min-width: 768px) {
+    body {
+        justify-content: center;
+        /* Center vertically on desktop */
+        padding: 0;
+    }
+
+    .calculator {
+        max-width: 900px;
+        /* Wider desktop layout */
+        padding: 24px;
+    }
+
+    .buttons {
+        gap: 12px;
+        /* Access to more space */
+        padding: 10px;
+    }
+
+    button {
+        height: 50px;
+        /* Mouse doesn't need as huge targets */
+        font-size: 16px;
+        /* Refined text size */
+    }
+
+    #display {
+        height: 80px;
+        font-size: 32px;
+    }
+
+    #expressionDisplay {
+        font-size: 16px;
+    }
+}
+
+/* ================= PANELS (Graph/History/Converter) ================= */
+/* Make them fluid too */
+#graphContainer,
+#historyPanel,
+#converterPanel {
+    width: 100%;
+    max-width: 450px;
+    /* Match calculator width on mobile */
+    margin-top: 15px;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+
+    #graphContainer,
+    #historyPanel,
+    #converterPanel {
+        max-width: 900px;
+        /* Match calculator on desktop */
+    }
+}
+
+/* ... Rest of styles (graph controls, history items) ... */
+
+/* ... (skipping unchanged sections) ... */
+
+/* Scientific Mode Layout Fixes */
+/* Row 6 has 3 hidden stats stats buttons. 
+   Visible: sin-1, cos-1, tan-1, Backspace.
+   Total 4 items. Grid is 7 cols. 
+   Old fix: Backspace span 4 (too big).
+   New fix: sin-1, cos-1, tan-1 span 2 (2*3=6). Backspace span 1. Total 7.
+*/
+body.mode-scientific button[onclick="appendValue('asin(')"],
+body.mode-scientific button[onclick="appendValue('acos(')"],
+body.mode-scientific button[onclick="appendValue('atan(')"] {
+    grid-column: span 2;
+}
+
+body.mode-scientific button[onclick="backspace()"] {
+    grid-column: span 1;
+}
+
+/* ================= DANGER SOFT (For Backspace) ================= */
+.danger-soft {
+    background: #ff9f43;
+    color: #fff;
+}
+
+.danger-soft:hover {
+    background: #e58e3c;
+    filter: brightness(1.1);
+}
+
+/* ================= FRACTION BUTTON ================= */
+.fraction-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    line-height: .9;
+}
+
+.frac>span {
+    display: block;
+}
+
+.frac .symbol {
+    display: none;
+    /* Hide the slash for vertical layout */
+}
+
+.frac .bottom {
+    border-top: 1px solid currentColor;
+    width: 100%;
+    text-align: center;
+    padding-top: 1px;
+}
+
+/* ================= SPECIAL SPANS ================= */
+
+
+.equal:hover {
+    background: var(--primary-hover);
+}
+
+.theme-icon {
+    position: absolute;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    height: auto;
+    width: auto;
+    z-index: 10;
+}
+
+.theme-icon:hover {
+    color: var(--text);
+    background: transparent;
+    filter: brightness(1.2);
+}
+
+/* ================= BUTTON TYPES ================= */
+.num {
+    background: var(--btn-num);
+}
+
+.sci {
+    background: var(--btn-sci);
+}
+
+.op {
+    background: var(--btn-op);
+}
+
+.danger {
+    background: var(--btn-danger);
+}
+
+.equal {
+    background: var(--btn-equal);
+    color: #000;
+}
+
+/* ================= INV ACTIVE ================= */
+.sci.active {
+    background: #ffcc00;
+    color: #000;
+    font-weight: 600;
+}
+
+/* ================= HOVER ================= */
+button:hover {
+    filter: brightness(1.15);
+}
+
+/* ================= KEYBOARD ACTIVE STATE ================= */
+button.active-key {
+    transform: scale(0.95);
+    filter: brightness(1.3);
+}
+
+/* ================= GRAPH SECTION ================= */
+#graphContainer {
+    margin-top: 16px;
+    width: 100%;
+    max-width: 450px;
+    background: var(--calc-bg);
+    padding: 12px;
+    border-radius: 16px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't break width */
+}
+
+.graph-controls {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens */
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.graph-controls button {
+    height: 34px;
+    padding: 0 12px;
+    font-size: 14px;
+    background: var(--btn-op);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-controls,
+.pan-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.pan-controls button {
+    padding: 0 8px;
+    /* Compact arrows */
+}
+
+#graph {
+    width: 100%;
+    height: 250px;
+    background: var(--display-bg);
+    border-radius: 12px;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ================= HISTORY PANEL ================= */
+#historyPanel {
+    margin-top: 16px;
+    width: 100%;
+    max-width: 450px;
+    background: var(--calc-bg);
+    padding: 16px;
+    border-radius: 16px;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.history-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.history-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.history-controls button {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+    background: var(--btn-op);
+    border-radius: 8px;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: filter 0.15s ease;
+}
+
+.history-controls button:hover {
+    filter: brightness(1.15);
+}
+
+.history-list {
+    overflow-y: auto;
+    max-height: 320px;
+    padding-right: 8px;
+}
+
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: var(--display-bg);
+    border-radius: 10px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: var(--btn-op);
+    border-radius: 10px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #4a6cff;
+}
+
+.history-item {
+    background: var(--display-bg);
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-item:hover {
+    background: var(--btn-num);
+    transform: translateX(4px);
+}
+
+.history-item .expression {
+    font-size: 14px;
+    color: var(--text);
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+.history-item .result {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+}
+
+.history-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text);
+    opacity: 0.5;
+    font-size: 14px;
+}
+
+/* ================= UNIT CONVERTER ================= */
+#converterPanel {
+    margin-top: 16px;
+    width: 100%;
+    max-width: 450px;
+    background: var(--calc-bg);
+    padding: 16px;
+    border-radius: 16px;
+    display: none;
+    box-sizing: border-box;
+    /* Changed from flex default, managed by JS toggle */
+    flex-direction: column;
+    gap: 12px;
+}
+
+#converterPanel h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+    text-align: center;
+}
+
+#converterPanel select,
+#converterPanel input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: var(--display-bg);
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    /* Fix padding issues */
+}
+
+.conv-row {
+    display: flex;
+    gap: 10px;
+}
+
+.conv-equals {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.close-conv {
+    background: var(--btn-danger);
+    color: white;
+    margin-top: 5px;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+
+/* ================= NEW FEATURES ================= */
+
+/* ================= UNIFIED LAYOUT (28-Col Grid) ================= */
+/* We use a 28-column grid to accommodate both 4-item rows and 7-item rows. */
+
+.buttons {
+    display: grid;
+    /* 28 columns for flexibility */
+    grid-template-columns: repeat(28, 1fr);
+    gap: 8px;
+    /* Slightly smaller gap for tight grid */
+    padding: 10px;
+}
+
+/* Default Button Span (Standard 7 items per row -> 4 columns each) */
+button {
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--text);
+    transition: filter 0.15s ease, transform 0.05s ease;
+    grid-column: span 4;
+    /* Default span */
+}
+
+
+button[onclick="useAns()"] {
+    grid-column: span 8 !important;
+}
+
+/* Ensure Graph is just a normal button now */
+button[onclick="toggleGraph()"] {
+    grid-column: span 4;
+    order: 0;
+    /* Reset order */
+}
+
+.display-wrapper {
+    width: 100%;
+    background: var(--display-bg);
+    border-radius: 16px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#expressionDisplay {
+    width: 100%;
+    text-align: right;
+    font-size: 16px;
+    color: var(--text-secondary);
+    min-height: 20px;
+    margin-bottom: 5px;
+    opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Courier New', monospace;
+}
+
+#display {
+    width: 100%;
+    height: auto;
+    font-size: 32px;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    box-shadow: none;
+}
+
+/* GRAPH HOLD */
+.hold-toggle {
+    display: flex;
+    align-items: center;
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    background: var(--btn-sci);
+    padding: 0 10px;
+    height: 34px;
+    border-radius: 10px;
+}
+
+.hold-toggle input {
+    margin-right: 6px;
+}

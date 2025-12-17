@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scientific Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= CALCULATOR ================= -->
+    <div class="calculator">
+
+
+
+        <button class="theme-icon" onclick="toggleTheme()" aria-label="Switch Theme">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                </path>
+            </svg>
+        </button>
+
+        <!-- Display -->
+        <div class="display-container">
+            <button class="history-icon" onclick="toggleHistory()" aria-label="History" title="History">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </button>
+            <button class="converter-icon" onclick="toggleConverter()" aria-label="Converter" title="Unit Converter"
+                style="left: 55px; position: absolute; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 5px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                </svg>
+            </button>
+            <div class="display-wrapper">
+                <div id="expressionDisplay"></div>
+                <input type="text" id="display" placeholder="0" readonly>
+            </div>
+        </div>
+        <div id="errorBox"></div>
+
+        <div class="buttons">
+
+            <!-- ROW 1 -->
+            <button class="sci" onclick="setDeg()">Deg</button>
+            <button class="sci" onclick="setRad()">Rad</button>
+            <button class="sci" onclick="appendValue('!')">x!</button>
+            <button class="sci" onclick="appendValue('(')">(</button>
+            <button class="sci" onclick="appendValue(')')">)</button>
+            <button class="op" onclick="appendValue('%')">%</button>
+            <button class="danger" onclick="clearDisplay()">AC</button>
+
+            <!-- ROW 2 -->
+            <button class="sci" id="invBtn" onclick="toggleInv()">Inv</button>
+            <button class="sci" onclick="appendValue('sin(')">sin</button>
+            <button class="sci" onclick="appendValue('ln(')">ln</button>
+            <button class="num" onclick="appendValue('7')">7</button>
+            <button class="num" onclick="appendValue('8')">8</button>
+            <button class="num" onclick="appendValue('9')">9</button>
+            <button class="op" onclick="appendValue('/')">÷</button>
+
+            <!-- ROW 3 -->
+            <button class="sci" onclick="appendValue('π')">π</button>
+            <button class="sci" onclick="appendValue('cos(')">cos</button>
+            <button class="sci" onclick="appendValue('log(')">log</button>
+            <button class="num" onclick="appendValue('4')">4</button>
+            <button class="num" onclick="appendValue('5')">5</button>
+            <button class="num" onclick="appendValue('6')">6</button>
+            <button class="op" onclick="appendValue('*')">×</button>
+
+            <!-- ROW 4 -->
+            <button class="sci" onclick="appendValue('e')">e</button>
+            <button class="sci" onclick="appendValue('tan(')">tan</button>
+            <button class="sci" onclick="appendValue('√')">√</button>
+            <button class="num" onclick="appendValue('1')">1</button>
+            <button class="num" onclick="appendValue('2')">2</button>
+            <button class="num" onclick="appendValue('3')">3</button>
+            <button class="op" onclick="appendValue('-')">−</button>
+
+            <!-- ROW 5 (Space added, 0 reset to 1 col) -->
+            <button class="sci" onclick="appendValue('exp(')">EXP</button>
+            <button class="sci" onclick="appendValue('^')">xʸ</button>
+            <button class="sci fraction-btn" onclick="appendValue('/')">
+                <span class="frac">
+                    <span>a</span>
+                    <span class="symbol">/</span>
+                    <span class="bottom">b</span>
+                </span>
+            </button>
+            <button class="num" onclick="appendValue('0')">0</button>
+            <button class="num" onclick="appendValue('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+            <button class="op" onclick="appendValue('+')">+</button>
+
+            <!-- ROW 6 -->
+            <button class="sci" onclick="appendValue('asin(')">sin⁻¹</button>
+            <button class="sci" onclick="appendValue('acos(')">cos⁻¹</button>
+            <button class="sci" onclick="appendValue('atan(')">tan⁻¹</button>
+            <button class="sci stats-only" onclick="appendValue('round(')">round</button>
+            <button class="sci stats-only" onclick="appendValue('floor(')">floor</button>
+            <button class="sci stats-only" onclick="appendValue('ceil(')">ceil</button>
+            <button class="danger-soft" onclick="backspace()">⌫</button>
+
+            <!-- ROW 7 -->
+            <button class="sci stats-only" onclick="appendValue('mean(')">mean</button>
+            <button class="sci stats-only" onclick="appendValue('stdev(')">stdev</button>
+            <button class="sci stats-only" onclick="appendValue('stdevp(')">stdevp</button>
+            <button class="sci stats-only" onclick="appendValue('nPr(')">nPr</button>
+            <button class="sci stats-only" onclick="appendValue('nCr(')">nCr</button>
+            <button class="sci stats-only" onclick="appendValue('abs(')">abs</button>
+            <button class="sci" onclick="toggleGraph()">Graph</button>
+
+            <!-- ROW 8 (Theme removed, Ans added spanning 2) -->
+            <button class="sci" onclick="appendValue('sec(')">sec</button>
+            <button class="sci" onclick="appendValue('cosec(')">cosec</button>
+            <button class="sci" onclick="appendValue('cot(')">cot</button>
+            <button class="sci" onclick="appendValue('nthRoot(')">ⁿ√</button>
+            <button class="sci" onclick="appendValue('|')">|x|</button>
+            <button class="sci" onclick="useAns()">Ans</button>
+
+        </div>
+    </div>
+
+    <!-- ================= GRAPH SECTION ================= -->
+    <div id="graphContainer" style="display:none;">
+        <div class="graph-controls">
+            <button onclick="toggleGraph()">Close</button>
+            <button onclick="clearGraph()">Clear</button>
+            <label class="hold-toggle"><input type="checkbox" id="holdGraph"> Hold</label>
+            <div class="zoom-controls">
+                <button onclick="zoomGraph(0.8)">-</button>
+                <button onclick="zoomGraph(1.25)">+</button>
+            </div>
+            <div class="pan-controls">
+                <button onclick="panGraph(-20, 0)">←</button>
+                <button onclick="panGraph(0, -20)">↑</button>
+                <button onclick="panGraph(0, 20)">↓</button>
+                <button onclick="panGraph(20, 0)">→</button>
+            </div>
+            <button onclick="exportGraph()">Export</button>
+        </div>
+        <canvas id="graph" width="420" height="250"></canvas>
+    </div>
+
+    <!-- ================= HISTORY PANEL ================= -->
+    <div id="historyPanel" style="display:none;">
+        <div class="history-header">
+            <h3>History</h3>
+            <div class="history-controls">
+                <button onclick="toggleGraph()">Graph</button>
+                <button onclick="clearHistory()">Clear</button>
+            </div>
+        </div>
+        <div id="historyList" class="history-list">
+            <!-- History items will be inserted here -->
+        </div>
+    </div>
+
+    <!-- ================= UNIT CONVERTER ================= -->
+    <div id="converterPanel" style="display:none;">
+        <h3>Unit Converter</h3>
+        <select id="convCategory" onchange="updateConvUnits()">
+            <option value="length">Length</option>
+            <option value="mass">Mass</option>
+            <option value="temp">Temperature</option>
+            <option value="currency">Currency</option>
+        </select>
+
+        <div class="conv-row">
+            <input type="number" id="convInput" oninput="convert()" placeholder="Input">
+            <select id="convFrom" onchange="convert()"></select>
+        </div>
+
+        <div class="conv-equals">=</div>
+
+        <div class="conv-row">
+            <input type="number" id="convOutput" readonly placeholder="Result">
+            <select id="convTo" onchange="convert()"></select>
+        </div>
+
+        <button onclick="toggleConverter()" class="close-conv">Close</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
